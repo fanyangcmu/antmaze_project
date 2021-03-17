@@ -109,11 +109,11 @@ class AntMazeEnv(_AntMazeEnv):
         dis_to_goal_1 = np.linalg.norm(current_pos[:2] - self.sub_goals[0])
         dis_to_goal_2 = np.linalg.norm(current_pos[:2] - self.sub_goals[1])
         dis_to_goal_3 = np.linalg.norm(current_pos[:2] - self.sub_goals[2])
-        if dis_to_goal_1 < 1:
+        if dis_to_goal_1 < 4:
             self.goal_1_flag = True
-        if dis_to_goal_2 < 1:
+        if dis_to_goal_2 < 4:
             self.goal_2_flag = True
-        if dis_to_goal_3 < 1:
+        if dis_to_goal_3 < 4:
             self.goal_3_flag = True
         
         info["goal_1_flag"] = self.goal_1_flag
