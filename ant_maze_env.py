@@ -67,9 +67,15 @@ class AntMazeEnv(_AntMazeEnv):
         super(AntMazeEnv, self).__init__("AntMaze", top_down_view=True)
         self.sub_goals = np.asarray(((16., 0.), (16., 16.), (0., 16.)), dtype=np.float32)
         self.current_goal = 0
+        self.goal_1_flag = False
+        self.goal_2_flag = False
+        self.goal_3_flag = False
 
     def reset(self):
         self.current_goal = 0
+        self.goal_1_flag = False
+        self.goal_2_flag = False
+        self.goal_3_flag = False
         obs = super(_AntMazeEnv, self).reset()
         return obs
 
@@ -95,9 +101,25 @@ class AntMazeEnv(_AntMazeEnv):
         current_pos = self.get_pos()
         done = (not np.isfinite(current_pos).all() or current_pos[2] <= 0.3 or current_pos[2] >= 1.1)
         forward_reward, reached = self._forward_reward(last_pos, current_pos)
+        if reached:
+            done = True
         ctl_reward = -5.e-3 * np.square(a).sum()
         info["reward_forward"] = forward_reward
         info["reward_ctrl"] = ctl_reward
+        dis_to_goal_1 = np.linalg.norm(current_pos[:2] - self.sub_goals[0])
+        dis_to_goal_2 = np.linalg.norm(current_pos[:2] - self.sub_goals[1])
+        dis_to_goal_3 = np.linalg.norm(current_pos[:2] - self.sub_goals[2])
+        if dis_to_goal_1 < 1:
+            self.goal_1_flag = True
+        if dis_to_goal_2 < 1:
+            self.goal_2_flag = True
+        if dis_to_goal_3 < 1:
+            self.goal_3_flag = True
+        
+        info["goal_1_flag"] = self.goal_1_flag
+        info["goal_2_flag"] = self.goal_2_flag
+        info["goal_3_flag"] = self.goal_3_flag
+
         return obs, (forward_reward + ctl_reward), (done or reached), info
 
 

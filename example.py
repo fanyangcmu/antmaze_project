@@ -14,3 +14,6 @@ if __name__ == "__main__":
             env.render()
             action = env.action_space.sample()
             obs, reward, done, info = env.step(action)
+            goal_1_suc = info['goal_1_flag']
+            goal_2_suc = info['goal_2_flag']
+            goal_3_suc = info['goal_3_flag']
